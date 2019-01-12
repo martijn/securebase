@@ -15,7 +15,7 @@ is not accessible from the outside world.
 
 Values are stored encrypted with
 
-  AES-GCM(HKDF(server-key | client-key))
+    AES-GCM(HKDF(server-key | client-key))
 
 The server key is used for every value and every value is encrypted with a
 unique nonce plus the client-key which is unknown to an attacker attacking
@@ -27,7 +27,7 @@ Setting up
 First, generate a server-secret in the keyfile. For example, fill it with some
 random data:
 
-  openssl rand -base64 32
+    openssl rand -base64 32
 
 Then run the binary. It will create an empty datastore in the `datastore` file
 and listen for HTTP requests on port 5800.
@@ -45,34 +45,34 @@ Example
 
 Retrieving empty key 'testkey':
 
-  $ curl -i -H "Client-secret: testsecret" -X GET http://localhost:5800/testkey
-  HTTP/1.1 404 Not Found
+    $ curl -i -H "Client-secret: testsecret" -X GET http://localhost:5800/testkey
+    HTTP/1.1 404 Not Found
 
-  Key not found
+    Key not found
 
 Setting a value with secret 'testsecret':
  
-  $ curl -i -H "Client-secret: testsecret" -X POST --data-binary "test" http://localhost:5800/testkey
-  HTTP/1.1 200 OK
+    $ curl -i -H "Client-secret: testsecret" -X POST --data-binary "test" http://localhost:5800/testkey
+    HTTP/1.1 200 OK
 
 Retrieving the value:
 
-  $ curl -i -H "Client-secret: testsecret" -X GET http://localhost:5800/testkey
-  HTTP/1.1 200 OK
+    $ curl -i -H "Client-secret: testsecret" -X GET http://localhost:5800/testkey
+    HTTP/1.1 200 OK
 
-  test
+    test
 
 Trying to retrieve the value with the wrong client secret:
 
-  $ curl -i -H "Client-secret: wrongsecret" -X GET http://localhost:5800/testkey
-  HTTP/1.1 401 Unauthorized
+    $ curl -i -H "Client-secret: wrongsecret" -X GET http://localhost:5800/testkey
+    HTTP/1.1 401 Unauthorized
 
-  Error in decryption. Incorrect Client-secret?
+    Error in decryption. Incorrect Client-secret?
 
 Deletion does not require Client-secret:
 
-  $ curl -i -H "Client-secret: wrongsecret" -X DELETE http://localhost:5800/testkey
-  HTTP/1.1 200 OK
+    $ curl -i -H "Client-secret: wrongsecret" -X DELETE http://localhost:5800/testkey
+    HTTP/1.1 200 OK
 
 TODO
 ====
@@ -97,3 +97,4 @@ Furthermore it could use:
 
 * Storing the server-key using asymmetric encryption, opening the possibility
   for using a HSM.
+
