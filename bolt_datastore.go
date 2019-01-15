@@ -6,8 +6,8 @@ type BoltDatastore struct {
 	db *bolt.DB
 }
 
-func NewBoltDatastore() *BoltDatastore {
-	db, err := bolt.Open("datastore", 0600, nil)
+func NewBoltDatastore(file string) *BoltDatastore {
+	db, err := bolt.Open(file, 0600, nil)
 	if err != nil {
 		panic(err)
 	}

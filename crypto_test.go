@@ -1,7 +1,6 @@
 package main
 
 import "bytes"
-import "os"
 import "testing"
 
 func TestMakeRecordKey(t *testing.T) {
@@ -57,9 +56,4 @@ func TestDecrypt(t *testing.T) {
 	if err == nil {
 		t.Error("Decrypt with wrong server-secret did not return error")
 	}
-}
-
-func TestMain(m *testing.M) {
-	server_secret = []byte("server-secret")
-	os.Exit(m.Run())
 }
