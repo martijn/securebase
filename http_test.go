@@ -97,4 +97,6 @@ func TestRouter(t *testing.T) {
 	if res.StatusCode != http.StatusMethodNotAllowed {
 		t.Errorf("Expected 405 response, got %v", res.StatusCode)
 	}
+
+  // TODO: Test get/post/delete handling with mocks maybe?
 }
