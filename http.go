@@ -63,7 +63,7 @@ func handlePost(res http.ResponseWriter, req *http.Request) {
 func handleDelete(res http.ResponseWriter, req *http.Request) {
 	info := parseRequest(req)
 
-  err := datastore.Delete(info.key)
+	err := datastore.Delete(info.key)
 	if err != nil {
 		http.Error(res, "Unexpected error while writing to datastore", http.StatusInternalServerError)
 		panic(err)

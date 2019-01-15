@@ -11,10 +11,10 @@ func NewBoltDatastore(file string) *BoltDatastore {
 	if err != nil {
 		panic(err)
 	}
-  db.Update(func(tx *bolt.Tx) error {
-    _, err := tx.CreateBucketIfNotExists([]byte("data"))
-    return err
-  })
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte("data"))
+		return err
+	})
 	return &BoltDatastore{db}
 }
 
