@@ -27,7 +27,7 @@ Setting up
 First, generate a server-secret in the keyfile. For example, fill it with some
 random data:
 
-    openssl rand -base64 32
+    openssl rand -base64 32 > keyfile
 
 Then run the binary. It will create an empty datastore in the `datastore` file
 and listen for HTTP requests on port 5800.
