@@ -4,13 +4,24 @@ import "fmt"
 import "io/ioutil"
 import "log"
 import "net/http"
+import "strings"
 
 type requestInfo struct {
 	key, clientSecret string
 }
 
+func getIP(remoteAddr string) string {
+	split := strings.Split(remoteAddr, ":")
+	return strings.Join(split[0:len(split)-1], ":")
+}
+
 func router(res http.ResponseWriter, req *http.Request) {
 	log.Println(req.Method, req.URL.Path, req.RemoteAddr)
+
+	if RateLimit(getIP(req.RemoteAddr)) {
+		http.Error(res, "Rate limit exceeded", http.StatusTooManyRequests)
+		return
+	}
 
 	switch req.Method {
 	case "GET":

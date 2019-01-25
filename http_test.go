@@ -98,5 +98,15 @@ func TestRouter(t *testing.T) {
 		t.Errorf("Expected 405 response, got %v", res.StatusCode)
 	}
 
-  // TODO: Test get/post/delete handling with mocks maybe?
+	// TODO: Test get/post/delete handling with mocks maybe?
+}
+
+func TestGetIP(t *testing.T) {
+	if getIP("[::1]:12345") != "[::1]" {
+		t.Error("Did not get expected output [::1]")
+	}
+
+	if getIP("127.0.0.1:12345") != "127.0.0.1" {
+		t.Error("Did not get expected output 127.0.0.1")
+	}
 }

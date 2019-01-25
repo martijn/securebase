@@ -11,7 +11,9 @@ retrieve data from Securebase when required. This way the most sensitive data
 in your application is moved out of the app server / database server attack
 surface; sensitive data can no longer be leaked through database-related
 attacks or user errors. Securebase should be hosted on an isolated server that
-is not accessible from the outside world.
+is not accessible from the outside world. Dumping of the datastore from the
+application is slowed down by rate limiting. Rate limiting is only an effective
+safe guard if monitoring is in place so a dump in progress will be noticed.
 
 Values are stored encrypted with
 
@@ -89,7 +91,7 @@ Securebase is not production quality unless the following is implemented:
 
 * HTTPS
 
-* Rate limiting to prevent abuse
+* Tweakable rate limiting
 
 Furthermore it could use:
 
