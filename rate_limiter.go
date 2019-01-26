@@ -16,9 +16,11 @@ type RateLogEntry struct {
 }
 
 var rateLog []RateLogEntry
+var housekeepingTicker *time.Ticker
 
 func init() {
 	rateLog = make([]RateLogEntry, 0)
+	housekeepingTicker = time.NewTicker(time.Second * Window * 2)
 }
 
 func hashClientId(clientId string) uint32 {
@@ -34,17 +36,31 @@ func collectRateLogEntries(hash uint32) []RateLogEntry {
 	collection := make([]RateLogEntry, 0)
 	newRateLog := make([]RateLogEntry, 0)
 	windowStart := time.Now().Unix() - Window
+	var housekeeping bool
+
+	select {
+	case _ = <-housekeepingTicker.C:
+		log.Printf("Starting rate log housekeeping. Current size: %d", len(rateLog))
+		housekeeping = true
+	default:
+		housekeeping = false
+	}
 
 	for _, entry := range rateLog {
-		if entry.timestamp > windowStart {
-			newRateLog = append(newRateLog, entry)
+		if entry.timestamp >= windowStart {
+			if housekeeping {
+				newRateLog = append(newRateLog, entry)
+			}
 			if entry.clientId == hash {
 				collection = append(collection, entry)
 			}
 		}
 	}
 
-	rateLog = newRateLog
+	if housekeeping {
+		rateLog = newRateLog
+		log.Printf("Finished rate log housekeeping. Current size: %d", len(rateLog))
+	}
 
 	return collection
 }
