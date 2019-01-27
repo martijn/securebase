@@ -19,7 +19,15 @@ var rateLog []RateLogEntry
 var housekeepingTicker *time.Ticker
 
 func init() {
+	resetRateLog()
+	initHousekeepingTicker()
+}
+
+func resetRateLog() {
 	rateLog = make([]RateLogEntry, 0)
+}
+
+func initHousekeepingTicker() {
 	housekeepingTicker = time.NewTicker(time.Second * Window * 2)
 }
 
@@ -27,8 +35,8 @@ func hashClientId(clientId string) uint32 {
 	return crc32.ChecksumIEEE([]byte(clientId))
 }
 
-func addRateLogEntry(hash uint32) {
-	rateLog = append(rateLog, RateLogEntry{time.Now().Unix(), hash})
+func addRateLogEntry(hash uint32, timestamp int64) {
+	rateLog = append(rateLog, RateLogEntry{timestamp, hash})
 }
 
 // Expunge old rate log entries and return all entries for given clientId
@@ -65,6 +73,7 @@ func collectRateLogEntries(hash uint32) []RateLogEntry {
 	return collection
 }
 
+// Returns true if limit is hit, false if request is allowed
 func RateLimit(clientId string) bool {
 	hash := hashClientId(clientId)
 	clientRequests := len(collectRateLogEntries(hash))
@@ -73,7 +82,7 @@ func RateLimit(clientId string) bool {
 		log.Printf("Request for %s blocked: %d request in list", clientId, clientRequests)
 		return true
 	} else {
-		addRateLogEntry(hash)
+		addRateLogEntry(hash, time.Now().Unix())
 		return false
 	}
 }
