@@ -82,7 +82,29 @@ func TestDelete(t *testing.T) {
 	}
 }
 
-func TestRouter(t *testing.T) {
+func TestRouterRateLimit(t *testing.T) {
+	for i := 0; i <= WindowLimit; i++ {
+		RateLimit("127.0.0.1")
+	}
+	defer resetRateLog()
+
+	ts := httptest.NewServer(http.HandlerFunc(router))
+	defer ts.Close()
+
+	req, err := http.NewRequest(http.MethodGet, ts.URL, nil)
+	if err != nil {
+		t.Error(err)
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Error(err)
+	}
+	if res.StatusCode != http.StatusTooManyRequests {
+		t.Errorf("Expected 429 response, got %v", res.StatusCode)
+	}
+}
+
+func TestRouter405(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(router))
 	defer ts.Close()
 
